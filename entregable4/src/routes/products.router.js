@@ -86,6 +86,9 @@ router.delete('/:pid', async (req, res) => {
       .send({ status: 'error', message: 'Producto no encontrado' })
   }
 
+  const io = req.app.get('socketio')
+  io.emit('showProducts', await manager.getProducts())
+
   res.send({ status: 'success', payload: response })
 })
 
