@@ -1,7 +1,7 @@
 [
 	{
 		"title": "Remera Editada",
-		"description": "Remera de talle pequeño",
+		"description": "Remera de talle pequeño editada",
 		"code": "REM01",
 		"price": 100,
 		"status": true,
@@ -25,13 +25,13 @@
 		"id": 4
 	},
 	{
-		"title": "Remera S",
-		"description": "Remera de talle pequeño",
+		"title": "Remera XL",
+		"description": "Remera de talle super grande",
 		"code": "REM01",
 		"price": 7600,
 		"status": true,
-		"stock": 24,
+		"stock": 1,
 		"category": "Remeras",
-		"id": 5
+		"id": 6
 	}
 ]
