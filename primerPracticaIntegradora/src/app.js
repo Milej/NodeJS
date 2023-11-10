@@ -1,7 +1,9 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import handlebars from 'express-handlebars'
-import productsRouter from './routes/products.router.js'
+import productsRouter from './routes/api/products.router.js'
+import messagesRouter from './routes/api/messages.router.js'
+import viewsRouter from './routes/web/views.router.js'
 import __dirname from './utils.js'
 
 const app = express()
@@ -23,6 +25,8 @@ try {
   console.log(error)
 }
 
+app.use('/', viewsRouter)
 app.use('/api/products', productsRouter)
+app.use('/api/messages', messagesRouter)
 
 app.listen(8080, console.log('Server running on port 8080'))
