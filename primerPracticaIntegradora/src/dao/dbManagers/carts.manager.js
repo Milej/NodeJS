@@ -2,7 +2,7 @@ import { cartsModel } from './models/carts.model.js'
 
 export default class Carts {
   constructor () {
-    console.log('Working with Cars')
+    console.log('Working with Carts')
   }
 
   getAll = async () => {
@@ -15,11 +15,18 @@ export default class Carts {
     return cart
   }
 
-  add = async products => {
-    const result = await cartsModel.create({ products })
+  add = async cart => {
+    const result = await cartsModel.create(cart)
+    return result
   }
 
-  update = async (id, products) => {
-    const result = await cartsModel.updateOne({ _id: id }, products)
+  update = async (id, cart) => {
+    const result = await cartsModel.updateOne({ _id: id }, cart)
+    return result
+  }
+
+  delete = async id => {
+    const result = await cartsModel.deleteOne({ _id: id })
+    return result
   }
 }
