@@ -1,0 +1,22 @@
+<div>
+  <h1>Productos</h1>
+  <a href='http://localhost:8080/products?sort=asc'><button>Ordernar ASC</button></a>
+  <a href='http://localhost:8080/products?sort=desc'><button>Ordenar DESC</button></a>
+  <hr />
+  {{#each payload}}
+    <p>Producto: {{this.title}}</p>
+    <a href='http://localhost:8080/product-detail?id={{this._id}}'><button>Ver
+        Producto</button></a>
+    <a href='#'><button>Añadir al carrito</button></a>
+  {{/each}}
+  <hr />
+  <div>
+    <p>Pagina {{page}} de {{totalPages}}</p>
+    {{#if prevLink}}
+      <a href='{{prevLink}}'><button>Anterior</button></a>
+    {{/if}}
+    {{#if nextLink}}
+      <a href='{{nextLink}}'><button>Siguiente</button></a>
+    {{/if}}
+  </div>
+</div>
