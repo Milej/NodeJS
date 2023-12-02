@@ -33,11 +33,13 @@ try {
   console.log("Database connected");
 } catch (error) {
   console.error("Eror internto", error);
-  handleDatabaseError(error, req, res, next);
+  // handleDatabaseError(error, req, res, next);
 }
 
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
+
+app.use("/", handleDatabaseError(error, req, res, next));
 
 app.listen(8080, console.log("Servidor corriendo en el puerto 8080"));
