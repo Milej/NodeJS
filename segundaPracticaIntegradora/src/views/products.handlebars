@@ -1,0 +1,15 @@
+<h1>Lista de productos</h1>
+{{#each products}}
+  <div>
+    <h3>{{this.title}} - Código: {{this.code}}</h3>
+    <p>{{this.description}}</p>
+    <h3>${{this.price}}</h3>
+    <span>
+      {{#if this.status}}
+        Disponible
+      {{else}}
+        Stock agotado
+      {{/if}}
+    </span>
+  </div>
+{{/each}}
