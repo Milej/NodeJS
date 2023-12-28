@@ -7,6 +7,9 @@ import dotenv from "dotenv";
 import __dirname from "./utils.js";
 import sessionRouter from "./routes/sessions.router.js";
 import viewsRouter from "./routes/views.router.js";
+import productsRouter from "./routes/products.router.js";
+import cartsRouter from "./routes/carts.router.js";
+import { Server } from "socket.io";
 
 const app = express();
 dotenv.config();
@@ -40,6 +43,12 @@ app.use(
 );
 
 app.use("/api/sessions", sessionRouter);
+app.use("/api/products", productsRouter);
+app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
 
-app.listen(8080, () => console.log("Server running"));
+const server = app.listen(8080, () => console.log("Server running"));
+
+const io = new Server(server);
+
+app.set("socketio", io);
