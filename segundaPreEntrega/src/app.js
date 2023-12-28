@@ -1,11 +1,13 @@
 import express from "express";
 import productsRouter from "./routes/api/products.router.js";
 import cartsRouter from "./routes/api/carts.router.js";
+import messagesRouter from "./routes/api/messages.router.js";
 import { __dirname } from "./utils.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import handlebars from "express-handlebars";
 import viewsRouter from "./routes/web/views.router.js";
+import { Server } from "socket.io";
 
 dotenv.config();
 
@@ -33,13 +35,35 @@ try {
   console.log("Database connected");
 } catch (error) {
   console.error("Eror internto", error);
-  // handleDatabaseError(error, req, res, next);
+  handleDatabaseError(error, req, res, next);
 }
 
+app.use("/", viewsRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
-app.use("/", viewsRouter);
+app.use("/api/messages", messagesRouter);
 
-app.use("/", handleDatabaseError(error, req, res, next));
+// app.use("/", handleDatabaseError(error, req, res, next));
 
-app.listen(8080, console.log("Servidor corriendo en el puerto 8080"));
+const server = app.listen(8080, console.log("Server running on port 8080"));
+
+const socketServer = new Server(server);
+
+socketServer.on("connection", async (socket) => {
+  const messages = await messagesManager.getAll();
+  console.log(`Nuevo cliente conectado`);
+
+  socket.on("userLogged", (data) => {
+    socket.emit("userConnected", messages);
+  });
+
+  socket.on("message", async (newMessage) => {
+    try {
+      await messagesManager.add(newMessage);
+      messages.push(newMessage);
+      socketServer.emit("messages", messages);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+});
