@@ -1,8 +1,25 @@
 <div>
   <h1>Productos</h1>
-  <p>Bienvenido <b>{{user.name}}</b> - Rol: {{user.rol}}</p>
-  <p>Edad: {{user.age}}</p>
-  <p>Correo: {{user.email}}</p>
-
-  <a href='/api/sessions/logout'><button>Cerrar sesión</button></a>
+  <a href='http://localhost:8080/products?sort=asc'><button>Ordernar ASC</button></a>
+  <a href='http://localhost:8080/products?sort=desc'><button>Ordenar DESC</button></a>
+  <hr />
+  {{#each payload}}
+    <div>
+      <p>Producto: {{this.title}}</p>
+      <h3>${{this.price}}</h3>
+      <a href='http://localhost:8080/product-detail?id={{this._id}}'><button>Ver
+          Producto</button></a>
+      <a href='#'><button>Añadir al carrito</button></a>
+    </div>
+  {{/each}}
+  <hr />
+  <div>
+    <p>Pagina {{page}} de {{totalPages}}</p>
+    {{#if prevLink}}
+      <a href='{{prevLink}}'><button>Anterior</button></a>
+    {{/if}}
+    {{#if nextLink}}
+      <a href='{{nextLink}}'><button>Siguiente</button></a>
+    {{/if}}
+  </div>
 </div>

@@ -5,11 +5,15 @@ import MongoStore from "connect-mongo";
 import session from "express-session";
 import dotenv from "dotenv";
 import __dirname from "./utils.js";
-import sessionRouter from "./routes/sessions.router.js";
-import viewsRouter from "./routes/views.router.js";
-import productsRouter from "./routes/products.router.js";
-import cartsRouter from "./routes/carts.router.js";
+import sessionRouter from "./routes/api/sessions.router.js";
+import productsRouter from "./routes/api/products.router.js";
+import messagesRouter from "./routes/api/messages.router.js";
+import cartsRouter from "./routes/api/carts.router.js";
+import viewsRouter from "./routes/web/views.router.js";
 import { Server } from "socket.io";
+import MessagesManager from "./dao/dbManagers/messages.manager.js";
+
+const messagesManager = new MessagesManager();
 
 const app = express();
 dotenv.config();
@@ -44,11 +48,33 @@ app.use(
 
 app.use("/api/sessions", sessionRouter);
 app.use("/api/products", productsRouter);
+app.use("/api/messages", messagesRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
 
-const server = app.listen(8080, () => console.log("Server running"));
+const server = app.listen(8080, () =>
+  console.log("Server running on port 8080")
+);
 
-const io = new Server(server);
+const socketServer = new Server(server);
 
-app.set("socketio", io);
+socketServer.on("connection", async (socket) => {
+  const messages = await messagesManager.getAll();
+  console.log(`Nuevo cliente conectado`);
+
+  socket.on("userLogged", (data) => {
+    socket.emit("userConnected", messages);
+  });
+
+  socket.on("message", async (newMessage) => {
+    try {
+      await messagesManager.add(newMessage);
+      messages.push(newMessage);
+      socketServer.emit("messages", messages);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+});
+
+app.set("socketio", socketServer);
