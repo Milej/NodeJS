@@ -9,17 +9,17 @@ const cartManager = new CartManager();
 const messagesManager = new MessagesManager();
 
 const publicAccess = (req, res, next) => {
-  if (req.session?.user) return res.redirect("/");
+  if (req.session?.user) return res.redirect("/profile");
   next();
 };
 
 const privateAccess = (req, res, next) => {
-  if (!req.session?.user) return res.redirect("/login");
+  if (!req.session?.user) return res.redirect("/");
   next();
 };
 
 const adminAccess = (req, res, next) => {
-  if (!req.session?.user) return res.redirect("/login");
+  if (!req.session?.user) return res.redirect("/");
 
   if (req.session.user?.rol !== "admin")
     return res.send({
@@ -34,11 +34,11 @@ router.get("/register", publicAccess, (req, res) => {
   res.render("register");
 });
 
-router.get("/login", publicAccess, (req, res) => {
+router.get("/", publicAccess, (req, res) => {
   res.render("login");
 });
 
-router.get("/", privateAccess, (req, res) => {
+router.get("/profile", privateAccess, (req, res) => {
   res.render("profile", {
     user: req.session.user,
   });
@@ -98,6 +98,7 @@ const getProducts = async (req, res) => {
       hasNextPage,
       prevLink: prevLinkUrl,
       nextLink: nextLinkUrl,
+      user: req.session.user,
     });
   } catch (error) {
     console.log(error);
@@ -105,7 +106,7 @@ const getProducts = async (req, res) => {
   }
 };
 
-router.get("/products", getProducts);
+router.get("/products", privateAccess, getProducts);
 
 router.get("/product-detail", async (req, res) => {
   const { id } = req.query;
