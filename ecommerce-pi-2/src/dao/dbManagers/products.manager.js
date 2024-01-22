@@ -2,7 +2,7 @@ import productsModel from "./models/products.model.js";
 
 export default class Products {
   constructor() {
-    console.log("Working with products");
+    console.log("Working products with db");
   }
 
   getAll = async (limit, page, sort) => {

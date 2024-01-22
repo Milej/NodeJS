@@ -2,7 +2,7 @@ import { userModel } from "./models/users.model.js";
 
 export default class Users {
   constructor() {
-    console.log("Working with users with DB");
+    console.log("Working users with DB");
   }
 
   getByEmail = async (email) => {

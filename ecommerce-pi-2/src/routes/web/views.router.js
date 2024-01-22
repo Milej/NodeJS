@@ -3,7 +3,6 @@ import Carts from "../../dao/dbManagers/carts.manager.js";
 import Messages from "../../dao/dbManagers/messages.manager.js";
 import Router from "../router.js";
 import { accessRoles, passportStrategies } from "../../config/enums.js";
-import { authToken } from "../../utils.js";
 
 export default class ViewsRouter extends Router {
   constructor() {
@@ -30,96 +29,96 @@ export default class ViewsRouter extends Router {
 
     this.get(
       "/profile",
-      [accessRoles.USER],
-      passportStrategies.NOTHING,
-      (req, res) => res.render("profile", { user: req.session.user })
+      [accessRoles.USER, accessRoles.ADMIN],
+      passportStrategies.JWT,
+      (req, res) => res.render("profile")
     );
 
     this.get(
       "/products",
-      [accessRoles.PUBLIC],
-      passportStrategies.NOTHING,
+      [accessRoles.USER, accessRoles.ADMIN],
+      passportStrategies.JWT,
       (req, res) => this.productsView(req, res)
     );
 
     this.get(
       "/current",
-      [accessRoles.PUBLIC],
-      passportStrategies.NOTHING,
+      [accessRoles.USER, accessRoles.ADMIN],
+      passportStrategies.JWT,
       (req, res) => res.render("current")
     );
   }
 
   async productsView(req, res) {
     try {
-      const response = await this.getProducts(req, res);
-      res.render("products", response);
+      const products = await this.productManager.getAll();
+      res.render("products", { products });
     } catch (error) {
       console.log(error);
     }
   }
 
-  async getProducts(req, res) {
-    try {
-      // Listar todos los productos con limit
-      let { limit = 10, page: cPage = 1, sort, query, queryValue } = req.query;
-      let result;
+  // async getProducts(req, res) {
+  //   try {
+  //     // Listar todos los productos con limit
+  //     let { limit = 10, page: cPage = 1, sort, query, queryValue } = req.query;
+  //     let result;
 
-      if (query && queryValue) {
-        result = await this.productManager.getAllWithQueries(
-          limit,
-          cPage,
-          sort,
-          query,
-          queryValue
-        );
-      } else {
-        result = await this.productManager.getAll(limit, cPage, sort);
-      }
+  //     if (query && queryValue) {
+  //       result = await this.productManager.getAllWithQueries(
+  //         limit,
+  //         cPage,
+  //         sort,
+  //         query,
+  //         queryValue
+  //       );
+  //     } else {
+  //       result = await this.productManager.getAll(limit, cPage, sort);
+  //     }
 
-      const {
-        docs,
-        totalPages,
-        prevPage,
-        nextPage,
-        page,
-        hasPrevPage,
-        hasNextPage,
-      } = result;
+  //     const {
+  //       docs,
+  //       totalPages,
+  //       prevPage,
+  //       nextPage,
+  //       page,
+  //       hasPrevPage,
+  //       hasNextPage,
+  //     } = result;
 
-      let prevLinkUrl = null;
-      let nextLinkUrl = null;
+  //     let prevLinkUrl = null;
+  //     let nextLinkUrl = null;
 
-      if (hasPrevPage) {
-        prevLinkUrl = `http://localhost:8080/products?limit=${limit}&page=${prevPage}${
-          sort ? `&sort=${sort}` : ""
-        }${query ? `&query=${query}&queryValue=${queryValue}` : ""}`;
-      }
+  //     if (hasPrevPage) {
+  //       prevLinkUrl = `http://localhost:8080/products?limit=${limit}&page=${prevPage}${
+  //         sort ? `&sort=${sort}` : ""
+  //       }${query ? `&query=${query}&queryValue=${queryValue}` : ""}`;
+  //     }
 
-      if (hasNextPage) {
-        nextLinkUrl = `http://localhost:8080/products?limit=${limit}&page=${nextPage}${
-          sort ? `&sort=${sort}` : ""
-        }${query ? `&query=${query}&queryValue=${queryValue}` : ""}`;
-      }
+  //     if (hasNextPage) {
+  //       nextLinkUrl = `http://localhost:8080/products?limit=${limit}&page=${nextPage}${
+  //         sort ? `&sort=${sort}` : ""
+  //       }${query ? `&query=${query}&queryValue=${queryValue}` : ""}`;
+  //     }
 
-      return {
-        status: "success",
-        payload: docs,
-        totalPages,
-        prevPage,
-        nextPage,
-        page,
-        hasPrevPage,
-        hasNextPage,
-        prevLink: prevLinkUrl,
-        nextLink: nextLinkUrl,
-        user: req.session.user,
-      };
-    } catch (error) {
-      console.log(error);
-      return { status: "error", error: error.message };
-    }
-  }
+  //     return {
+  //       status: "success",
+  //       payload: docs,
+  //       totalPages,
+  //       prevPage,
+  //       nextPage,
+  //       page,
+  //       hasPrevPage,
+  //       hasNextPage,
+  //       prevLink: prevLinkUrl,
+  //       nextLink: nextLinkUrl,
+  //       user: req.session.user,
+  //     };
+  //   } catch (error) {
+  //     console.log(error);
+  //     return { status: "error", error: error.message };
+  //   }
+  // }
 
   // router.get("/product-detail", async (req, res) => {
   //   const { id } = req.query;

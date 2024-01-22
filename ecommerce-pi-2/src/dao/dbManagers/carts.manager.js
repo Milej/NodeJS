@@ -2,7 +2,7 @@ import cartsModel from "./models/carts.model.js";
 
 export default class Carts {
   constructor() {
-    console.log("Working with carts");
+    console.log("Working carts with db");
   }
 
   add = async (products) => {

@@ -74,40 +74,26 @@ export default class Router {
     next();
   };
 
+  // Middleware de autenticación con passport
   applyCustomPassportCall = (strategy) => (req, res, next) => {
     if (strategy === passportStrategies.JWT) {
       //custom passport callback
-      // passport.authenticate(strategy, function (err, user, info) {
-      //   if (err) return next(err);
+      passport.authenticate(
+        strategy,
+        { session: false },
+        function (err, user, info) {
+          if (err) return next(err);
 
-      //   if (!user) {
-      //     return res.status(401).send({
-      //       error: info.messages ? info.messages : info.toString(),
-      //     });
-      //   }
+          if (!user) {
+            return res.status(401).send({
+              error: info.messages ? info.messages : info.toString(),
+            });
+          }
 
-      //   req.user = user;
-      //   next();
-      // })(req, res, next);
-      // const authToken = req.headers.authorization;
-
-      // if (!authToken)
-      //   return res
-      //     .status(401)
-      //     .send({ status: "error", message: "Not authenticated" });
-
-      // const token = authToken.split(" ")[1];
-
-      // jwt.verify(token, process.env.PRIVATE_KEY_JWT, (error, credentials) => {
-      //   if (error)
-      //     return res
-      //       .status(401)
-      //       .send({ status: "error", message: error.message });
-
-      //   req.user = credentials.user;
-
-      //   next();
-      // });
+          req.user = user;
+          next();
+        }
+      )(req, res, next);
     } else {
       next();
     }
@@ -116,7 +102,7 @@ export default class Router {
   handlePolicies = (policies) => (req, res, next) => {
     if (policies[0] === accessRoles.PUBLIC) return next();
 
-    const user = req.user || req.session.user;
+    const user = req.user;
 
     if (!policies.includes(user?.role.toUpperCase()))
       return res.status(403).json({ error: "Not permissions" });
@@ -131,6 +117,7 @@ export default class Router {
         // apply, va a ejecutar la funcion callback a la instancia de nuestra clase
         await callback.apply(this, params);
       } catch (error) {
+        // res.status().send()
         params[1].status(500).send({ status: "error", message: error.message });
       }
     });

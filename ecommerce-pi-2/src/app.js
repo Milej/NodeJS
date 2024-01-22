@@ -2,19 +2,17 @@ import express from "express";
 import handlebars from "express-handlebars";
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
-import session from "express-session";
-import dotenv from "dotenv";
 import passport from "passport";
+import cookieParser from "cookie-parser"
+import dotenv from "dotenv";
 import { __dirname } from "./utils.js";
 import { Server } from "socket.io";
 import { initializePassport } from "./config/passport.config.js";
 import ViewsRouter from "./routes/web/views.router.js";
-
 import SessionsRouter from "./routes/api/sessions.router.js";
 import ProductsRouter from "./routes/api/products.router.js";
 import messagesRouter from "./routes/api/messages.router.js";
 import cartsRouter from "./routes/api/carts.router.js";
-
 import MessagesManager from "./dao/dbManagers/messages.manager.js";
 
 const messagesManager = new MessagesManager();
@@ -33,25 +31,13 @@ try {
   console.log(error);
 }
 
-app.use(
-  session({
-    store: MongoStore.create({
-      client: mongoose.connection.getClient(),
-      ttl: 3600,
-    }),
-    secret: process.env.PRIVATE_KEY_JWT,
-    resave: true,
-    saveUninitialized: false,
-  })
-);
-
-initializePassport();
-app.use(passport.initialize());
-app.use(passport.session());
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/public`));
+app.use(cookieParser())
+
+initializePassport();
+app.use(passport.initialize());
 
 app.engine("handlebars", handlebars.engine());
 app.set("views", `${__dirname}/views`);

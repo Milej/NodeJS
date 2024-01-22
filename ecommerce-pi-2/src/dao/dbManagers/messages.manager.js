@@ -2,7 +2,7 @@ import { messagesModel } from './models/messages.model.js'
 
 export default class Messages {
   constructor () {
-    console.log('Working with messages')
+    console.log('Working messages with db')
   }
 
   getAll = async () => {
