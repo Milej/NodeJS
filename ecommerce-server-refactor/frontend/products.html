@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Productos</title>
+</head>
+<body>
+  <div>
+    <h1>Hola {{user.name}}<h1>
+    <h1>Productos</h1>
+    <a href='http://localhost:8080/products?sort=asc'><button>Ordernar ASC</button></a>
+    <a href='http://localhost:8080/products?sort=desc'><button>Ordenar DESC</button></a>
+    <hr />
+    {{#each payload}}
+      <div>
+        <p>Producto: {{this.title}}</p>
+        <h3>${{this.price}}</h3>
+        <a href='http://localhost:8080/product-detail?id={{this._id}}'><button>Ver
+            Producto</button></a>
+        <a href='#'><button>Añadir al carrito</button></a>
+      </div>
+    {{/each}}
+    <hr />
+    <div>
+      <p>Pagina {{page}} de {{totalPages}}</p>
+      {{#if prevLink}}
+        <a href='{{prevLink}}'><button>Anterior</button></a>
+      {{/if}}
+      {{#if nextLink}}
+        <a href='{{nextLink}}'><button>Siguiente</button></a>
+      {{/if}}
+    </div>
+      
+  </div>
+  
+</body>
+</html>
