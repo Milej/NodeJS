@@ -5,57 +5,28 @@ export default class Products {
     console.log("Working products with db");
   }
 
-  getAll = async (limit, page, sort) => {
-    const options = {
-      page,
-      limit,
-      lean: true,
-    };
-
-    if (sort) {
-      options.sort = { price: sort };
-    }
-
-    const products = await productsModel.paginate({}, options);
-    return products;
-  };
-
-  getAllWithQueries = async (limit, page, sort, queryC, queryValue) => {
-    const options = {
-      page,
-      limit,
-      lean: true,
-    };
-
-    if (sort) {
-      options.sort = { price: sort };
-    }
-
-    const query = {
-      [queryC]: queryValue,
-    };
-
+  async getAll(query, options) {
     const products = await productsModel.paginate(query, options);
     return products;
-  };
+  }
 
-  getById = async (id) => {
+  async getById(id) {
     const product = await productsModel.findOne({ _id: id }).lean();
     return product;
-  };
+  }
 
-  add = async (product) => {
+  async add(product) {
     const result = await productsModel.create(product);
     return result;
-  };
+  }
 
-  update = async (id, product) => {
+  async update(id, product) {
     const result = await productsModel.updateOne({ _id: id }, product);
     return result;
-  };
+  }
 
-  delete = async (id) => {
+  async delete(id) {
     const result = await productsModel.deleteOne({ _id: id });
     return result;
-  };
+  }
 }

@@ -5,13 +5,13 @@ export default class Users {
     console.log("Working users with DB");
   }
 
-  getByEmail = async (email) => {
+  async getUser(email) {
     const user = await userModel.findOne({ email }).lean();
     return user;
-  };
+  }
 
-  save = async (user) => {
-    const result = await userModel.create(user);
+  async addUser(user) {
+    const result = (await userModel.create(user)).toJSON();
     return result;
-  };
+  }
 }

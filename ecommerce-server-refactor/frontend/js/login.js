@@ -3,26 +3,35 @@ const form = document.querySelector("#loginForm");
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  if (document.querySelector("#txtError"))
+    document.querySelector("#txtError").remove();
+
   const data = new FormData(form);
   const obj = {};
 
   data.forEach((value, key) => (obj[key] = value));
 
   try {
-    const response = await fetch("/api/sessions/login", {
+    const response = await fetch("http://localhost:8080/api/auth/login", {
       method: "POST",
+      credentials: "include",
       headers: {
-        "Accept": "application/json",
         "Content-Type": "application/json",
       },
       body: JSON.stringify(obj),
     });
 
-    console.log(response);
+    const content = await response.json();
 
-    if (response.status === 200) {
-      console.log(document.cookie);
+    if (response.status === 400) {
+      const txtError = document.createElement("p");
+      txtError.id = "txtError";
+      txtError.innerHTML = `${content.message}`;
+      form.append(txtError);
+      return;
     }
+
+    window.location.href = "profile.html";
   } catch (error) {
     console.log(error);
   }

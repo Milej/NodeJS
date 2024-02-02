@@ -1,31 +1,11 @@
-import { Router } from 'express'
-import Messages from '../../dao/dbManagers/messages.manager.js'
+import Router from "../router.js";
+import { accessRoles, passportStrategies } from "../../config/enums.js";
+import { getMessages, addMessage } from "../../controllers/messages.controller.js";
 
-const router = Router()
-const messagesManager = new Messages()
+export default class MessagesRouter extends Router {
+  init() {
+    this.get("/", [accessRoles.USER, accessRoles.ADMIN], passportStrategies.JWT, getMessages);
 
-router.get('/', async (req, res) => {
-  try {
-    const messages = await messagesManager.getAll()
-    res.send({ status: 'success', payload: messages })
-  } catch (error) {
-    console.log(error)
-    return res.status(500).send({ status: 'error', message: error.message })
+    this.post("/", [accessRoles.USER, accessRoles.ADMIN], passportStrategies.JWT, addMessage);
   }
-})
-
-router.post('/', async (req, res) => {
-  try {
-    const { user, message } = req.body
-    const result = await messagesManager.add({
-      user,
-      message
-    })
-    res.send({ status: 'success', payload: result })
-  } catch (error) {
-    console.log(error)
-    return res.status(500).send({ status: 'error', message: error.message })
-  }
-})
-
-export default router
+}

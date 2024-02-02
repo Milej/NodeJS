@@ -5,41 +5,38 @@ export default class Carts {
     console.log("Working carts with db");
   }
 
-  add = async (products) => {
-    const result = await cartsModel.create(products);
-    return result;
-  };
-
-  getById = async (id) => {
+  async getCart(id) {
     const cart = await cartsModel.findOne({ _id: id }).lean();
     return cart;
-  };
+  }
 
-  addProductToCart = async (cartId, cart) => {
+  async addCart(products) {
+    const result = await cartsModel.create(products);
+    return result;
+  }
+
+  async addProductToCart(cart, cartId) {
     const result = await cartsModel.updateOne({ _id: cartId }, cart);
     return result;
-  };
+  }
 
-  deleteProductFromCart = async (cartId, cart) => {
+  async deleteProductFromCart(cart, cartId) {
     const result = await cartsModel.updateOne({ _id: cartId }, cart);
     return result;
-  };
+  }
 
-  update = async (cartId, products) => {
+  async updateCart(products, cartId) {
     const result = await cartsModel.updateOne({ _id: cartId, products });
     return result;
-  };
+  }
 
-  updateProductCartQuantity = async (cartId, cart) => {
+  async updateProductQuantityInCart(cartId, cart) {
     const result = await cartsModel.updateOne({ _id: cartId }, cart);
     return result;
-  };
+  }
 
-  deleteAllProducts = async (cartId) => {
-    const result = await cartsModel.updateOne(
-      { _id: cartId },
-      { products: [] }
-    );
+  async deleteCart(cartId, products) {
+    const result = await cartsModel.updateOne({ _id: cartId, products });
     return result;
-  };
+  }
 }

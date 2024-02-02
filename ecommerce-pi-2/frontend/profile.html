@@ -9,12 +9,11 @@
     <div>
       <h1>Mi perfil</h1>
 
-      <p>Bienvenido <span id="txtUserName"></span></p>
-      <p id="txtUserAge"></p>
-      <p id="txtUserEmail"></p>
+      <p>Bienvenido {{user.name}}</p>
+      <p>Edad: {{user.age}}</p>
+      <p>Correo: {{user.email}}</p>
 
-      <a href="http://localhost:8080/api/auth/logout"><button>Cerrar sesión</button></a>
-      <script src="./js/profile.js"></script>
+      <a href="/api/sessions/logout"><button>Cerrar sesión</button></a>
     </div>
   </body>
 </html>

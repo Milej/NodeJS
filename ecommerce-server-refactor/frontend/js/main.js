@@ -1,24 +1,23 @@
-const cargar = async () => {
-  try {
-    const response = await fetch("/api/sessions/current", {
-      method: "GET",
-      headers: {
-        "authorization": `Bearer ${localStorage.getItem("access_token")}`,
-      },
-    });
+// const autorizacion = async () => {
+//   try {
+//     const response = await fetch("http://localhost:8080/api/auth/current", {
+//       method: "GET",
+//       credentials: "include",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     });
 
-    if (response.status != 200) {
-      return (location.href = "/login");
-    }
+//     const data = await response.json();
 
-    const data = await response.json();
+//     if (response.status != 200 || !data.payload) {
+//       return (location.href = "./");
+//     }
 
-    const dataToHtml = `<p>Nombre: ${data.payload.first_name} Correo: ${data.payload.email}</p>`;
+//     location.href = "profile.html";
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
-    document.querySelector("#main").innerHTML = dataToHtml;
-  } catch (error) {
-    document.querySelector("#main").innerHTML = error;
-  }
-};
-
-document.onload(cargar())
+// autorizacion();

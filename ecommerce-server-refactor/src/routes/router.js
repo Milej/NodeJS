@@ -55,64 +55,66 @@ export default class Router {
   }
 
   generateCustomResponse = (req, res, next) => {
-    res.sendSuccess = (data) => {
+    res.sendSuccess = data => {
       res.status(200).json({ data });
     };
 
-    res.sendSuccessNewResource = (data) => {
+    res.sendSuccessNewResource = data => {
       res.status(201).json({ data });
     };
 
-    res.sendServerError = (error) => {
+    res.sendServerError = error => {
       res.status(500).json({ error });
     };
 
-    res.sendClientError = (error) => {
+    res.sendClientError = error => {
       res.status(400).json({ error });
+    };
+
+    res.sendClientUnauthorized = error => {
+      res.status(401).json({ error });
     };
 
     next();
   };
 
   // Middleware de autenticación con passport
-  applyCustomPassportCall = (strategy) => (req, res, next) => {
+  applyCustomPassportCall = strategy => (req, res, next) => {
     if (strategy === passportStrategies.JWT) {
       //custom passport callback
-      passport.authenticate(
-        strategy,
-        { session: false },
-        function (err, user, info) {
-          if (err) return next(err);
+      passport.authenticate(strategy, { session: false }, function (err, user, info) {
+        if (err) return next(err);
 
-          if (!user) {
-            return res.status(401).send({
-              error: info.messages ? info.messages : info.toString(),
-            });
-          }
-
-          req.user = user;
-          next();
+        if (!user) {
+          return res.status(401).send({
+            error: info.messages ? info.messages : info.toString(),
+          });
         }
-      )(req, res, next);
+
+        req.user = user;
+        next();
+      })(req, res, next);
+    } else if (strategy === passportStrategies.GITHUB) {
+      passport.authenticate(strategy, { scope: "[user:email]" });
+      next();
     } else {
       next();
     }
   };
 
-  handlePolicies = (policies) => (req, res, next) => {
+  handlePolicies = policies => (req, res, next) => {
     if (policies[0] === accessRoles.PUBLIC) return next();
 
     const user = req.user;
 
-    if (!policies.includes(user?.role.toUpperCase()))
-      return res.status(403).json({ error: "Not permissions" });
+    if (!policies.includes(user?.role.toUpperCase())) return res.status(403).json({ error: "Not permissions" });
 
     next();
   };
 
   applyCallbacks(callbacks) {
     // Mapear los callbacks 1 a 1 obteniendo sus parametros (req,res) -> ...params
-    return callbacks.map((callback) => async (...params) => {
+    return callbacks.map(callback => async (...params) => {
       try {
         // apply, va a ejecutar la funcion callback a la instancia de nuestra clase
         await callback.apply(this, params);

@@ -4,7 +4,7 @@ import Users from "../../dao/dbManagers/users.manager.js";
 import { hashPassword, generateToken, validatePassword } from "../../utils.js";
 import { accessRoles, passportStrategies } from "../../config/enums.js";
 
-export default class SessionsRouter extends Router {
+export default class AuthRouter extends Router {
   constructor() {
     super(); // Llama al constructor padre
     this.userManager = new Users();
@@ -63,8 +63,6 @@ export default class SessionsRouter extends Router {
       "/current",
       [accessRoles.USER, accessRoles.ADMIN],
       passportStrategies.JWT,
-      // authToken,
-      //passport.authenticate(passportStrategies.JWT, { session: false }), // Hay que pasar el flag de sesiones a falso porq no trabajamos con sessions
       (req, res) => {
         res.send({ status: "success", payload: req.user });
       }

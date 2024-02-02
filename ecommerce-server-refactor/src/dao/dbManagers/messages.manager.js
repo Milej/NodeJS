@@ -1,17 +1,17 @@
-import { messagesModel } from './models/messages.model.js'
+import { messagesModel } from "./models/messages.model.js";
 
 export default class Messages {
-  constructor () {
-    console.log('Working messages with db')
+  constructor() {
+    console.log("Working messages with db");
   }
 
-  getAll = async () => {
-    const messages = await messagesModel.find().lean()
-    return messages
+  async getMessages() {
+    const messages = await messagesModel.find().lean();
+    return messages;
   }
 
-  add = async message => {
-    const result = await messagesModel.create(message)
-    return result
+  async addMessage(message) {
+    const result = await messagesModel.create(message);
+    return result;
   }
 }

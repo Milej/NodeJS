@@ -28,7 +28,7 @@ export default class ViewsRouter extends Router {
     );
 
     this.get(
-      "/profile",
+      "/",
       [accessRoles.USER, accessRoles.ADMIN],
       passportStrategies.JWT,
       (req, res) => res.render("profile")
