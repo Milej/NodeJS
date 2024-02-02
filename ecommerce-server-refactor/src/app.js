@@ -10,7 +10,7 @@ import { initializePassport } from "./config/passport.config.js";
 import AuthRouter from "./routes/api/auth.router.js";
 import ProductsRouter from "./routes/api/products.router.js";
 import MessagesRouter from "./routes/api/messages.router.js";
-// import CartsRouter from "./routes/api/carts.router.js";
+import CartsRouter from "./routes/api/carts.router.js";
 import MessagesManager from "./dao/dbManagers/messages.manager.js";
 
 const messagesManager = new MessagesManager();
@@ -21,7 +21,7 @@ dotenv.config();
 const authRouter = new AuthRouter();
 const productsRouter = new ProductsRouter();
 const messagesRouter = new MessagesRouter();
-// const cartsRouter = new CartsRouter();
+const cartsRouter = new CartsRouter();
 
 try {
   await mongoose.connect(process.env.MONGODB_URI);
@@ -41,7 +41,7 @@ app.use(passport.initialize());
 app.use("/api/auth", authRouter.getRouter());
 app.use("/api/products", productsRouter.getRouter());
 app.use("/api/messages", messagesRouter.getRouter());
-// app.use("/api/carts", cartsRouter.getRouter());
+app.use("/api/carts", cartsRouter.getRouter());
 
 const server = app.listen(8080, () => console.log("Server running on port 8080"));
 

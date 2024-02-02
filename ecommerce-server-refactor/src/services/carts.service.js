@@ -6,6 +6,9 @@ const getCart = async cartId => {
   if (!cartId) return { status: "error", message: "Debes enviar un id válido" };
 
   const cart = await cartsManager.getCart(cartId);
+
+  if (!cart) return { status: "error", message: "El carrito no existe" };
+
   return cart;
 };
 
@@ -32,7 +35,7 @@ const addProductToCart = async (productId, cartId) => {
     cart.products.push(product);
   }
 
-  const result = await addProductToCart(cart, cartId);
+  const result = await cartsManager.addProductToCart(cart, cartId);
   return result;
 };
 
@@ -43,13 +46,13 @@ const deleteProductFromCart = async (productId, cartId) => {
 
   if (!cart) return { status: "error", message: "El carrito no existe" };
 
-  const productIndex = cart.products.findIndex(product => product.product._id == productId);
+  const productIndex = cart.products.findIndex(product => product._id == productId);
 
-  if (productIndex) {
+  if (productIndex === -1) {
     cart.products.splice(productIndex, 1);
   }
 
-  const result = await deleteProductFromCart(cart, cartId);
+  const result = await cartsManager.deleteProductFromCart(cart, cartId);
   return result;
 };
 
@@ -60,7 +63,7 @@ const updateCart = async (products, cartId) => {
 
   if (!cart) return { status: "error", message: "El carrito no existe" };
 
-  const result = await updateCart(products, cartId);
+  const result = await cartsManager.updateCart(products, cartId);
   return result;
 };
 
@@ -71,7 +74,7 @@ const updateProductQuantityInCart = async (productId, quantity, cartId) => {
 
   if (!cart) return { status: "error", message: "El carrito no existe" };
 
-  const productFound = cart.products.find(product => product.product._id == productId);
+  const productFound = cart.products.find(product => product._id == productId);
 
   if (productFound) {
     productFound.quantity = quantity;

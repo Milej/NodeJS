@@ -82,8 +82,8 @@ const updateCart = async (req, res) => {
 const updateProductQuantityInCart = async (req, res) => {
   try {
     const productId = req.params.pid;
-    const { quantity } = req.body;
     const cartId = req.params.cid;
+    const { quantity } = req.body;
 
     const result = await updateProductQuantityInCartService(productId, quantity, cartId);
 
@@ -98,7 +98,7 @@ const updateProductQuantityInCart = async (req, res) => {
 const deleteCart = async (req, res) => {
   try {
     const cartId = req.params.cid;
-    const result = await deleteCart(cartId);
+    const result = await deleteCartService(cartId);
 
     if (result.status === "error") return res.sendClientError(result.message);
 
